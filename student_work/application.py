@@ -19,7 +19,7 @@ body {
     height: 100vh;
 }
 .card {
-    background: red;
+    background: #E0D6D5;
     padding: 25px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -43,7 +43,7 @@ button {
     cursor: pointer;
 }
 button:hover {
-    background: #023020;
+    background: #5B7859;
 }
 a {
     display: block;
