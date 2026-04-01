@@ -1,9 +1,31 @@
 # Your code will go here
 from flask import Flask, request, redirect, url_for, render_template_string, session
+import sqlite3
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"  # needed for sessions
 
+# ------ DATABASE SETUP --------
+def get_db():
+    conn = sqlite3.connect("users.db")
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def init_db():
+    conn = get_db()
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            username TEXT PRIMARY KEY,
+            password TEXT
+        )
+    """)
+    conn.commit()
+    conn.close()
+
+init_db()
+
+
+# ------ STYLE ------
 users = {
     "alice": "password123"
 }
