@@ -34,7 +34,7 @@ base_style = """
 <style>
 body {
     font-family: Verdana, sans-serif;
-    background: #f4f6f8;
+    background: #363737;
     display: flex;
     justify-content: center;
     align-items: center;
