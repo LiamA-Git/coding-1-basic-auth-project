@@ -66,6 +66,8 @@ button {
 }
 button:hover {
     background: #5B7859;
+    transform:  translateY(5px);
+    transition: all 0.2s ease;
 }
 a {
     display: block;
