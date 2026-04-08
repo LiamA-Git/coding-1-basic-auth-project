@@ -26,10 +26,6 @@ init_db()
 
 
 # ------ STYLE ------
-users = {
-    "alice": "password123"
-}
-
 base_style = """
 <style>
 body {
@@ -116,7 +112,7 @@ secret_page = base_style + """
 <a href="/logout"><button>Logout</button></a>
 </div>
 """
-
+# -------- ROUTES ---------
 @app.route("/", methods=["GET", "POST"])
 def login():
     error = ""
@@ -124,7 +120,14 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        if username in users and users[username] == password:
+        conn = get_db()
+        user = conn.execute(
+            "SELECT * FROM users WHERE username=? AND password=?",
+            (username, password)
+        ).fetchone()
+        conn.close()
+        
+        if user:
             session["user"] = username
             return redirect(url_for("secret"))
         else:
@@ -139,13 +142,20 @@ def register():
         username = request.form["username"]
         password = request.form["password"]
 
-        if username in users:
-            error = "Username already exists"
-        elif not username or not password:
+        if not username or not password:
             error = "Fields cannot be empty"
         else:
-            users[username] = password
-            return redirect(url_for("login"))
+            try:
+                conn = get_db()
+                conn.execute(
+                    "INSERT INTO users (username, password) VALUES (?, ?)",
+                    (usename, password)
+                )
+                conn.commit()
+                conn.close()
+                return redirect(url_for("login"))
+            except sqlite3.IntegrityError:
+                error = "Username already exists"
 
     return render_template_string(register_page, error=error)
 
@@ -159,5 +169,5 @@ def secret():
 def logout():
     session.pop("user", None)
     return redirect(url_for("login"))
-
+# ---------- RUN -----------
 app.run(host="0.0.0.0", port=5000)
